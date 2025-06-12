@@ -20,8 +20,8 @@ let upPressed = false;
 let downPressed = false;
 
 function startGame() {
-    myGamePiece = new component(40, 30, "white", 10, 120);
-    myScore = new component("30px", "Consolas", "white", 280, 40, "text");
+    myGamePiece = new component(25, 25, "yellow", 10, 120);
+    myScore = new component("30px", "Consolas", "yellow", 280, 40, "text");
     myGameArea.start();
 }
 
@@ -88,11 +88,9 @@ function updateGameArea() {
 
     //  Key input movement
     if (upPressed) {
-        myGamePiece.speedY = -1;
-    } else if (downPressed) {
-        myGamePiece.speedY = 1;
+        myGamePiece.speedY = -8.0;
     } else {
-        myGamePiece.speedY = 0;
+        myGamePiece.speedY =2.0;
     }
 
     for (let i = 0; i < myObstacles.length; i++) {
@@ -104,7 +102,7 @@ function updateGameArea() {
 
     myGameArea.clear();
     myGameArea.frameNo += 1;
-    if (myGameArea.frameNo == 1 || everyinterval(50)) {
+    if (myGameArea.frameNo == 1 || everyinterval(60)) {
         x = myGameArea.canvas.width;
         minHeight = 20;
         maxHeight = 200;
@@ -133,18 +131,14 @@ function everyinterval(n) {
 
 //  Key event listeners
 document.addEventListener("keydown", function(event) {
-    if (event.code === "ArrowUp") {
+    if (event.code === "Space") {
         upPressed = true;
-    } else if (event.code === "ArrowDown") {
-        downPressed = true;
     }
 });
 
 document.addEventListener("keyup", function(event) {
-    if (event.code === "ArrowUp") {
+    if (event.code === "Space") {
         upPressed = false;
-    } else if (event.code === "ArrowDown") {
-        downPressed = false;
     }
 });
 
