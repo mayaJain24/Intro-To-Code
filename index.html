@@ -99,6 +99,10 @@ function updateGameArea() {
             return;
         } 
     }
+    if (myGamePiece.y < 0 || myGamePiece.y + myGamePiece.height > myGameArea.canvas.height) {
+        myGameArea.stop();
+        return;
+    }
 
     myGameArea.clear();
     myGameArea.frameNo += 1;
