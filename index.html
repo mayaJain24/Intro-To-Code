@@ -89,10 +89,8 @@ function updateGameArea() {
     //  Key input movement
     if (upPressed) {
         myGamePiece.speedY = -1;
-    } else if (downPressed) {
-        myGamePiece.speedY = 1;
     } else {
-        myGamePiece.speedY = 0;
+        myGamePiece.speedY = 0.25;
     }
 
     for (let i = 0; i < myObstacles.length; i++) {
@@ -115,14 +113,8 @@ function updateGameArea() {
         myObstacles.push(new component(50, height, "grey", x, 0));
         myObstacles.push(new component(50, x - height - gap, "grey", x, height + gap));
     }
-<<<<<<< HEAD
     for (i = 0; i < myObstacles.length; i += 1) {
         myObstacles[i].speedX = -5;
-=======
-
-    for (let i = 0; i < myObstacles.length; i++) {
-        myObstacles[i].speedX = -2;
->>>>>>> 51270360559f4ffc4d857c2a1eeb9dfaba3ba0af
         myObstacles[i].newPos();
         myObstacles[i].update();
     }
@@ -139,18 +131,14 @@ function everyinterval(n) {
 
 //  Key event listeners
 document.addEventListener("keydown", function(event) {
-    if (event.code === "ArrowUp") {
+    if (event.code === "Space") {
         upPressed = true;
-    } else if (event.code === "ArrowDown") {
-        downPressed = true;
     }
 });
 
 document.addEventListener("keyup", function(event) {
-    if (event.code === "ArrowUp") {
+    if (event.code === "Space") {
         upPressed = false;
-    } else if (event.code === "ArrowDown") {
-        downPressed = false;
     }
 });
 
