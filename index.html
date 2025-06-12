@@ -10,11 +10,14 @@ canvas {
 </style>
 </head>
 <body onload="startGame()">
-<script>
 
-var myGamePiece;
-var myObstacles = [];
-var myScore;
+<script>
+let myGamePiece;
+let myObstacles = [];
+let myScore;
+
+let upPressed = false;
+let downPressed = false;
 
 function startGame() {
     myGamePiece = new component(30, 30, "white", 10, 120);
@@ -22,7 +25,7 @@ function startGame() {
     myGameArea.start();
 }
 
-var myGameArea = {
+const myGameArea = {
     canvas : document.createElement("canvas"),
     start : function() {
         this.canvas.width = 480;
@@ -31,14 +34,14 @@ var myGameArea = {
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.frameNo = 0;
         this.interval = setInterval(updateGameArea, 20);
-        },
+    },
     clear : function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     },
     stop : function() {
         clearInterval(this.interval);
     }
-}
+};
 
 function component(width, height, color, x, y, type) {
     this.type = type;
@@ -49,7 +52,7 @@ function component(width, height, color, x, y, type) {
     this.x = x;
     this.y = y;    
     this.update = function() {
-        ctx = myGameArea.context;
+        const ctx = myGameArea.context;
         if (this.type == "text") {
             ctx.font = this.width + " " + this.height;
             ctx.fillStyle = color;
@@ -58,92 +61,122 @@ function component(width, height, color, x, y, type) {
             ctx.fillStyle = color;
             ctx.fillRect(this.x, this.y, this.width, this.height);
         }
-    }
+    };
     this.newPos = function() {
         this.x += this.speedX;
         this.y += this.speedY;        
-    }
+    };
     this.crashWith = function(otherobj) {
-        var myleft = this.x;
-        var myright = this.x + (this.width);
-        var mytop = this.y;
-        var mybottom = this.y + (this.height);
-        var otherleft = otherobj.x;
-        var otherright = otherobj.x + (otherobj.width);
-        var othertop = otherobj.y;
-        var otherbottom = otherobj.y + (otherobj.height);
-        var crash = true;
+        const myleft = this.x;
+        const myright = this.x + this.width;
+        const mytop = this.y;
+        const mybottom = this.y + this.height;
+        const otherleft = otherobj.x;
+        const otherright = otherobj.x + otherobj.width;
+        const othertop = otherobj.y;
+        const otherbottom = otherobj.y + otherobj.height;
+        let crash = true;
         if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
             crash = false;
         }
         return crash;
-    }
+    };
 }
 
 function updateGameArea() {
-    var x, height, gap, minHeight, maxHeight, minGap, maxGap;
-    for (i = 0; i < myObstacles.length; i += 1) {
+    let x, height, gap, minHeight, maxHeight, minGap, maxGap;
+
+    //  Key input movement
+    if (upPressed) {
+        myGamePiece.speedY = -1;
+    } else if (downPressed) {
+        myGamePiece.speedY = 1;
+    } else {
+        myGamePiece.speedY = 0;
+    }
+
+    for (let i = 0; i < myObstacles.length; i++) {
         if (myGamePiece.crashWith(myObstacles[i])) {
             myGameArea.stop();
             return;
         } 
     }
+
     myGameArea.clear();
     myGameArea.frameNo += 1;
     if (myGameArea.frameNo == 1 || everyinterval(150)) {
         x = myGameArea.canvas.width;
         minHeight = 20;
         maxHeight = 200;
-        height = Math.floor(Math.random()*(maxHeight-minHeight+1)+minHeight);
+        height = Math.floor(Math.random() * (maxHeight - minHeight + 1) + minHeight);
         minGap = 50;
         maxGap = 200;
-        gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
+        gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
         myObstacles.push(new component(50, height, "grey", x, 0));
         myObstacles.push(new component(50, x - height - gap, "grey", x, height + gap));
     }
-    for (i = 0; i < myObstacles.length; i += 1) {
+
+    for (let i = 0; i < myObstacles.length; i++) {
         myObstacles[i].speedX = -2;
         myObstacles[i].newPos();
         myObstacles[i].update();
     }
-    myScore.text="SCORE: " + myGameArea.frameNo;
+
+    myScore.text = "SCORE: " + myGameArea.frameNo;
     myScore.update();
     myGamePiece.newPos();    
     myGamePiece.update();
 }
 
 function everyinterval(n) {
-    if ((myGameArea.frameNo / n) % 1 == 0) {return true;}
-    return false;
+    return (myGameArea.frameNo / n) % 1 === 0;
 }
 
+//  Key event listeners
+document.addEventListener("keydown", function(event) {
+    if (event.code === "ArrowUp") {
+        upPressed = true;
+    } else if (event.code === "ArrowDown") {
+        downPressed = true;
+    }
+});
+
+document.addEventListener("keyup", function(event) {
+    if (event.code === "ArrowUp") {
+        upPressed = false;
+    } else if (event.code === "ArrowDown") {
+        downPressed = false;
+    }
+});
+
+// Optional: Buttons for mobile
 function moveup() {
     myGamePiece.speedY = -1; 
 }
-
 function movedown() {
     myGamePiece.speedY = 1; 
 }
-
 function moveleft() {
     myGamePiece.speedX = -1; 
 }
-
 function moveright() {
     myGamePiece.speedX = 1; 
 }
-
 function clearmove() {
     myGamePiece.speedX = 0; 
     myGamePiece.speedY = 0; 
 }
 </script>
+
+<!-- Optional on-screen controls -->
 <div style="text-align:center;width:480px;">
   <button onmousedown="moveup()" onmouseup="clearmove()" ontouchstart="moveup()">UP</button><br><br>
-  
   <button onmousedown="movedown()" onmouseup="clearmove()" ontouchstart="movedown()">DOWN</button>
 </div>
 
-<h1 style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; text-align: center; color:white; background-color: rgb(71, 71, 71);">The score will count one point for each frame you manage to "stay alive". when you die to play again reload page</h1>
+<h1 style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; text-align: center; color:white; background-color: rgb(71, 71, 71);">
+    The score will count one point for each frame you manage to "stay alive". To play again, reload the page.
+</h1>
+
 </body>
 </html>
