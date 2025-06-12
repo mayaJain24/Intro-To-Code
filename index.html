@@ -104,7 +104,7 @@ function updateGameArea() {
 
     myGameArea.clear();
     myGameArea.frameNo += 1;
-    if (myGameArea.frameNo == 1 || everyinterval(30)) {
+    if (myGameArea.frameNo == 1 || everyinterval(50)) {
         x = myGameArea.canvas.width;
         minHeight = 20;
         maxHeight = 200;
@@ -115,14 +115,8 @@ function updateGameArea() {
         myObstacles.push(new component(50, height, "grey", x, 0));
         myObstacles.push(new component(50, x - height - gap, "grey", x, height + gap));
     }
-<<<<<<< HEAD
     for (i = 0; i < myObstacles.length; i += 1) {
-        myObstacles[i].speedX = -5;
-=======
-
-    for (let i = 0; i < myObstacles.length; i++) {
-        myObstacles[i].speedX = -2;
->>>>>>> 51270360559f4ffc4d857c2a1eeb9dfaba3ba0af
+        myObstacles[i].speedX = -4;
         myObstacles[i].newPos();
         myObstacles[i].update();
     }
@@ -156,28 +150,18 @@ document.addEventListener("keyup", function(event) {
 
 // Optional: Buttons for mobile
 function moveup() {
-    myGamePiece.speedY = -1; 
+    myGamePiece.speedY = -3 
 }
 function movedown() {
-    myGamePiece.speedY = 1; 
+    myGamePiece.speedY = 3; 
 }
-function moveleft() {
-    myGamePiece.speedX = -1; 
-}
-function moveright() {
-    myGamePiece.speedX = 1; 
-}
+
 function clearmove() {
     myGamePiece.speedX = 0; 
     myGamePiece.speedY = 0; 
 }
 </script>
 
-<!-- Optional on-screen controls -->
-<div style="text-align:center;width:480px;">
-  <button onmousedown="moveup()" onmouseup="clearmove()" ontouchstart="moveup()">UP</button><br><br>
-  <button onmousedown="movedown()" onmouseup="clearmove()" ontouchstart="movedown()">DOWN</button>
-</div>
 
 <h1 style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; text-align: center; color:white; background-color: rgb(71, 71, 71);">
     The score will count one point for each frame you manage to "stay alive". To play again, reload the page.
