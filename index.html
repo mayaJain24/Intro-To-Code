@@ -17,7 +17,7 @@ var myObstacles = [];
 var myScore;
 
 function startGame() {
-    myGamePiece = new component(30, 30, "white", 10, 120);
+    myGamePiece = new component(40, 30, "white", 10, 120);
     myScore = new component("30px", "Consolas", "white", 280, 40, "text");
     myGameArea.start();
 }
@@ -90,7 +90,7 @@ function updateGameArea() {
     }
     myGameArea.clear();
     myGameArea.frameNo += 1;
-    if (myGameArea.frameNo == 1 || everyinterval(150)) {
+    if (myGameArea.frameNo == 1 || everyinterval(30)) {
         x = myGameArea.canvas.width;
         minHeight = 20;
         maxHeight = 200;
@@ -102,7 +102,7 @@ function updateGameArea() {
         myObstacles.push(new component(50, x - height - gap, "grey", x, height + gap));
     }
     for (i = 0; i < myObstacles.length; i += 1) {
-        myObstacles[i].speedX = -2;
+        myObstacles[i].speedX = -5;
         myObstacles[i].newPos();
         myObstacles[i].update();
     }
