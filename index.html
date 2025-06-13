@@ -161,7 +161,12 @@ function clearmove() {
     myGamePiece.speedX = 0; 
     myGamePiece.speedY = 0; 
 }
+
+function goBack() {
+    window.history.back(); // Goes to the previous page
+}
 </script>
+<button onclick= goBack() style="position:absolute; top:10px; left:10px;">🔙 Back</button>
 
 
 <h1 style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; text-align: center; color:white; background-color: rgb(71, 71, 71);">
