@@ -97,15 +97,43 @@ function updateGame() {
 
   drawGame();
 }
+function drawEyes(head) {
+  const eyeSize = 3;
+  const offset = 4;
+  const centerX = head.x * gridSize;
+  const centerY = head.y * gridSize;
+
+  ctx.fillStyle = "black";
+
+  if (dx === 1) { // moving right
+    ctx.fillRect(centerX + gridSize - offset - eyeSize, centerY + offset, eyeSize, eyeSize);
+    ctx.fillRect(centerX + gridSize - offset - eyeSize, centerY + gridSize - offset - eyeSize, eyeSize, eyeSize);
+  } else if (dx === -1) { // moving left
+    ctx.fillRect(centerX + offset, centerY + offset, eyeSize, eyeSize);
+    ctx.fillRect(centerX + offset, centerY + gridSize - offset - eyeSize, eyeSize, eyeSize);
+  } else if (dy === -1) { // moving up
+    ctx.fillRect(centerX + offset, centerY + offset, eyeSize, eyeSize);
+    ctx.fillRect(centerX + gridSize - offset - eyeSize, centerY + offset, eyeSize, eyeSize);
+  } else if (dy === 1) { // moving down
+    ctx.fillRect(centerX + offset, centerY + gridSize - offset - eyeSize, eyeSize, eyeSize);
+    ctx.fillRect(centerX + gridSize - offset - eyeSize, centerY + gridSize - offset - eyeSize, eyeSize, eyeSize);
+  }
+}
 
 function drawGame() {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Draw snake
-  ctx.fillStyle = "lime";
-  for (let part of snake) {
+  for (let i = 0; i < snake.length; i++) {
+    ctx.fillStyle = "lime";
+    const part = snake[i];
     ctx.fillRect(part.x * gridSize, part.y * gridSize, gridSize - 2, gridSize - 2);
+
+    // Draw eyes on the head
+    if (i === 0) {
+      drawEyes(part);
+    }
   }
 
   // Draw food
