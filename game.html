@@ -28,10 +28,10 @@
     }
   </style>
 </head>
-<body onload="startGame()">
 <h1>Snake Game</h1>
 <h2 id="scoreDisplay">Score: 0</h2>
 <canvas id="gameCanvas" width="400" height="400"></canvas>
+<button = onclick = "startGame()" id = "startButton" style = "display:inline-block">Start</button>
 <button onclick="restartGame()" id="restartButton" style="display: none;">Restart</button>
 
 <script>
@@ -53,6 +53,7 @@ function startGame() {
   dx = 1; dy = 0;
   score = 0;
   food = randomFood();
+  document.getElementById("startButton").style.display = "none";
   document.getElementById("scoreDisplay").innerText = "Score: 0";
   document.getElementById("restartButton").style.display = "none";
   clearInterval(gameInterval);
