@@ -28,6 +28,22 @@ function startGame() {
     myGameArea.start();
 }
 
+function restartGame() {
+    // Remove the restart button if it exists
+    var button = document.getElementById("restartButton");
+    if (button) {
+        button.remove();
+    }
+    myObstacles = [];
+    score = 0;
+    myGamePiece.speedX = 0
+    myGamePiece.speedY = 0
+    myGamePiece.x = 10;
+    myGamePiece.y = 120;
+    myGameArea.clear();
+    myGameArea.start();
+}
+
 const myGameArea = {
     canvas: document.createElement("canvas"),
     start : function() {
@@ -96,13 +112,53 @@ function updateGameArea() {
         myGamePiece.speedY =2.0;
     }
 
-    for (let i = 0; i < myObstacles.length; i++) {
-        if (myGamePiece.crashWith(myObstacles[i])) {
-            myGameArea.stop();
-            return;
-        } 
+for (let i = 0; i < myObstacles.length; i++) {
+    if (myGamePiece.crashWith(myObstacles[i])) {
+        
+
+        // Create and show a restart button
+        var button = document.createElement("button");
+        button.id = "restartButton"
+        button.textContent = "Restart";
+        button.style.position = "absolute";
+        button.style.top = "30%";
+        button.style.left = "50%";
+        button.style.transform = "translate(-50%, -50%)";
+        button.style.padding = "15px 30px";
+        button.style.fontSize = "20px";
+        button.style.backgroundColor = "black";
+        button.style.color = "white";
+        button.style.border = "none";
+        button.style.borderRadius = "8px";
+        button.style.cursor = "pointer";
+        button.style.zIndex = "1000";
+        button.onclick = restartGame;
+
+        document.body.appendChild(button);
+        myGameArea.stop();
+        return;
     }
+}
     if (myGamePiece.y < 0 || myGamePiece.y + myGamePiece.height > myGameArea.canvas.height) {
+        
+        var button = document.createElement("button");
+        button.id = "restartButton"
+        button.textContent = "Restart";
+        button.style.position = "absolute";
+        button.style.top = "30%";
+        button.style.left = "50%";
+        button.style.transform = "translate(-50%, -50%)";
+        button.style.padding = "15px 30px";
+        button.style.fontSize = "20px";
+        button.style.backgroundColor = "black";
+        button.style.color = "white";
+        button.style.border = "none";
+        button.style.borderRadius = "8px";
+        button.style.cursor = "pointer";
+        button.style.zIndex = "1000";
+        button.onclick = restartGame;
+
+        document.body.appendChild(button);
         myGameArea.stop();
         return;
     }
@@ -170,8 +226,9 @@ function goBack() {
 
 
 <h1 style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; text-align: center; color:white; background-color: rgb(71, 71, 71);">
-    The score will count one point for each frame you manage to "stay alive". To play again, reload the page.
+    The score will count one point for each frame you manage to "stay alive". To play again, Press button below.
 </h1>
+
 
 </body>
 </html>
