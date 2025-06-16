@@ -18,6 +18,7 @@ canvas {
 let myGamePiece;
 let myObstacles = [];
 let myScore;
+let score = 0;
 
 let upPressed = false;
 let downPressed = false;
@@ -25,23 +26,24 @@ let downPressed = false;
 function startGame() {
     myGamePiece = new component(25, 25, "yellow", 10, 120);
     myScore = new component("30px", "Consolas", "yellow", 280, 40, "text");
+    score = 0;
     myGameArea.start();
 }
 
 function restartGame() {
-    // Remove the restart button if it exists
-    var button = document.getElementById("restartButton");
-    if (button) {
-        button.remove();
+    const button = document.getElementById("restartButton");
+    if (button) button.remove();
+
+    // Remove old canvas
+    if (document.body.contains(myGameArea.canvas)) {
+        document.body.removeChild(myGameArea.canvas);
     }
+
     myObstacles = [];
-    score = 0;
-    myGamePiece.speedX = 0
-    myGamePiece.speedY = 0
-    myGamePiece.x = 10;
-    myGamePiece.y = 120;
-    myGameArea.clear();
-    myGameArea.start();
+    upPressed = false;
+    downPressed = false;
+
+    startGame();
 }
 
 const myGameArea = {
@@ -105,67 +107,30 @@ function component(width, height, color, x, y, type) {
 function updateGameArea() {
     let x, height, gap, minHeight, maxHeight, minGap, maxGap;
 
-    //  Key input movement
-    if (upPressed) {
-        myGamePiece.speedY = -8.0;
-    } else {
-        myGamePiece.speedY =2.0;
+    // Movement
+    myGamePiece.speedY = upPressed ? -8.0 : 2.0;
+
+    // Collision
+    for (let i = 0; i < myObstacles.length; i++) {
+        if (myGamePiece.crashWith(myObstacles[i])) {
+            showRestartButton();
+            myGameArea.stop();
+            return;
+        }
     }
 
-for (let i = 0; i < myObstacles.length; i++) {
-    if (myGamePiece.crashWith(myObstacles[i])) {
-        
-
-        // Create and show a restart button
-        var button = document.createElement("button");
-        button.id = "restartButton"
-        button.textContent = "Restart";
-        button.style.position = "absolute";
-        button.style.top = "30%";
-        button.style.left = "50%";
-        button.style.transform = "translate(-50%, -50%)";
-        button.style.padding = "15px 30px";
-        button.style.fontSize = "20px";
-        button.style.backgroundColor = "black";
-        button.style.color = "white";
-        button.style.border = "none";
-        button.style.borderRadius = "8px";
-        button.style.cursor = "pointer";
-        button.style.zIndex = "1000";
-        button.onclick = restartGame;
-
-        document.body.appendChild(button);
-        myGameArea.stop();
-        return;
-    }
-}
+    // Boundary collision
     if (myGamePiece.y < 0 || myGamePiece.y + myGamePiece.height > myGameArea.canvas.height) {
-        
-        var button = document.createElement("button");
-        button.id = "restartButton"
-        button.textContent = "Restart";
-        button.style.position = "absolute";
-        button.style.top = "30%";
-        button.style.left = "50%";
-        button.style.transform = "translate(-50%, -50%)";
-        button.style.padding = "15px 30px";
-        button.style.fontSize = "20px";
-        button.style.backgroundColor = "black";
-        button.style.color = "white";
-        button.style.border = "none";
-        button.style.borderRadius = "8px";
-        button.style.cursor = "pointer";
-        button.style.zIndex = "1000";
-        button.onclick = restartGame;
-
-        document.body.appendChild(button);
+        showRestartButton();
         myGameArea.stop();
         return;
     }
 
     myGameArea.clear();
     myGameArea.frameNo += 1;
-    if (myGameArea.frameNo == 1 || everyinterval(60)) {
+
+    // Create obstacles
+    if (myGameArea.frameNo === 1 || everyinterval(60)) {
         x = myGameArea.canvas.width;
         minHeight = 20;
         maxHeight = 200;
@@ -173,17 +138,36 @@ for (let i = 0; i < myObstacles.length; i++) {
         minGap = 80;
         maxGap = 200;
         gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
-        myObstacles.push(new component(50, height, "grey", x, 0));
-        myObstacles.push(new component(50, x - height - gap, "grey", x, height + gap));
-    }
-    for (i = 0; i < myObstacles.length; i += 1) {
-        myObstacles[i].speedX = -4;
-        myObstacles[i].newPos();
-        myObstacles[i].update();
+
+        const topObstacle = new component(50, height, "grey", x, 0);
+        const bottomHeight = myGameArea.canvas.height - height - gap;
+        const bottomObstacle = new component(50, bottomHeight, "grey", x, height + gap);
+
+        topObstacle.isScored = false;
+        myObstacles.push(topObstacle, bottomObstacle);
     }
 
-    myScore.text = "SCORE: " + myGameArea.frameNo;
+    // Move/update obstacles and check score
+    for (let i = 0; i < myObstacles.length; i += 2) {
+        const top = myObstacles[i];
+        const bottom = myObstacles[i + 1];
+
+        top.speedX = bottom.speedX = -4;
+        top.newPos(); bottom.newPos();
+        top.update(); bottom.update();
+
+        // Score if passed
+        if (!top.isScored && top.x + top.width < myGamePiece.x) {
+            top.isScored = true;
+            score += 1;
+        }
+    }
+
+    // Update score
+    myScore.text = "SCORE: " + score;
     myScore.update();
+
+    // Move player
     myGamePiece.newPos();    
     myGamePiece.update();
 }
@@ -192,43 +176,47 @@ function everyinterval(n) {
     return (myGameArea.frameNo / n) % 1 === 0;
 }
 
-//  Key event listeners
+// Key events
 document.addEventListener("keydown", function(event) {
-    if (event.code === "Space") {
-        upPressed = true;
-    }
+    if (event.code === "Space") upPressed = true;
 });
-
 document.addEventListener("keyup", function(event) {
-    if (event.code === "Space") {
-        upPressed = false;
-    }
+    if (event.code === "Space") upPressed = false;
 });
 
-// Optional: Buttons for mobile
-function moveup() {
-    myGamePiece.speedY = -3 
-}
-function movedown() {
-    myGamePiece.speedY = 3; 
+// Show restart button
+function showRestartButton() {
+    const button = document.createElement("button");
+    button.id = "restartButton"
+    button.textContent = "Restart";
+    button.style.position = "absolute";
+    button.style.top = "30%";
+    button.style.left = "50%";
+    button.style.transform = "translate(-50%, -50%)";
+    button.style.padding = "15px 30px";
+    button.style.fontSize = "20px";
+    button.style.backgroundColor = "black";
+    button.style.color = "white";
+    button.style.border = "none";
+    button.style.borderRadius = "8px";
+    button.style.cursor = "pointer";
+    button.style.zIndex = "1000";
+    button.onclick = restartGame;
+
+    document.body.appendChild(button);
 }
 
-function clearmove() {
-    myGamePiece.speedX = 0; 
-    myGamePiece.speedY = 0; 
-}
-
+// Go back button
 function goBack() {
-    window.history.back(); // Goes to the previous page
+    window.history.back();
 }
 </script>
-<button onclick= goBack() style="position:absolute; top:10px; left:10px;">🔙 Back</button>
 
+<button onclick="goBack()" style="position:absolute; top:10px; left:10px;">🔙 Back</button>
 
 <h1 style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; text-align: center; color:white; background-color: rgb(71, 71, 71);">
-    The score will count one point for each frame you manage to "stay alive". To play again, Press button below.
+    Score increases when you pass obstacle gaps. Survive as long as you can! Press "Restart" after crashing.
 </h1>
-
 
 </body>
 </html>
