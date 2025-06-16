@@ -182,6 +182,11 @@ document.addEventListener("keydown", function(e) {
       break;
   }
 });
+// Go back button
+function goBack() {
+    window.history.back();
+}
 </script>
+<button onclick="goBack()" style="position:absolute; top:10px; left:10px;">🔙 Back</button>
 </body>
 </html>
