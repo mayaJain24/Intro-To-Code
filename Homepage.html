@@ -13,6 +13,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
         }
 
         header {
@@ -28,6 +29,7 @@
         .game-container {
             display: flex;
             flex-wrap: wrap;
+            text-align: center;
             justify-content: center;
             gap: 20px;
             margin: 40px 0;
@@ -40,7 +42,10 @@
             border-radius: 12px;
             padding: 16px;
             width: 220px;
-            text-align: center;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             transition: transform 0.2s ease, background-color 0.3s ease;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
@@ -58,15 +63,24 @@
             margin-bottom: 12px;
         }
 
-        .game-card a {
+        .game-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            width: 100%;
+        }
+
+        .game-text a {
             color: #61dafb;
             text-decoration: none;
             font-size: 1.2em;
-            display: block;
             margin-bottom: 8px;
+            display: block;
         }
 
-        .game-card p {
+        .game-text p {
             font-size: 0.9em;
             color: #ccc;
         }
@@ -77,6 +91,16 @@
                 width: 90%;
             }
         }
+        .game-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.game-link:hover .game-card {
+    transform: scale(1.05);
+    background-color: #2a2a2a;
+}
     </style>
 </head>
 <body>
@@ -85,24 +109,28 @@
         🎮 Choose a Game
     </header>
 
-    <div class="game-container">
+<div class="game-container">
+    <a href="index.html" class="game-link">
         <div class="game-card">
-            <img src="https://via.placeholder.com/220x140.png?text=Game+1" alt="Flappy bird">
-            <a href="index.html">Flappy bird</a>
+            <img src="https://via.placeholder.com/220x140.png?text=Game+1" alt="Flappy Bird">
+            <div class="game-text">
+                <h3>Flappy Bird</h3>
+                <p>Tap to fly and avoid pipes!</p>
+            </div>
         </div>
+    </a>
+
+    <a href="game.html" class="game-link">
         <div class="game-card">
-            <img src="https://via.placeholder.com/220x140.png?text=Game+2" alt="Game 2">
-            <a href="game.html">Snake</a>
+            <img src="https://via.placeholder.com/220x140.png?text=Game+2" alt="Snake">
+            <div class="game-text">
+                <h3>Snake</h3>
+                <p>Eat apples, grow longer, avoid yourself!</p>
+            </div>
         </div>
-        <div class="game-card">
-            <img src="https://via.placeholder.com/220x140.png?text=Game+3" alt="Game 3">
-            <a href="#">Game 3</a>
-        </div>
-        <div class="game-card">
-            <img src="https://via.placeholder.com/220x140.png?text=Game+4" alt="Game 4">
-            <a href="#">Game 4</a>
-        </div>
-    </div>
+    </a>
+</div>
+
 
 </body>
 </html>
